@@ -5,7 +5,7 @@ pygame.init()
 
 # Screen dimensions
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
-SCREEN_COLOR = (255, 255, 255)
+SCREEN_COLOR = (000, 000, 000)
 
 # Ball properties
 BALL_RADIUS = 20
