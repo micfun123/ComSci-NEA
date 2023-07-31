@@ -47,8 +47,10 @@ def draw_speed_text(surface, speed):
 def draw_input_box():
     color = TEXT_BOX_ACTIVE_COLOR if active_input else TEXT_BOX_COLOR
     pygame.draw.rect(screen, color, input_box, border_radius=6)
+    #clear format the text in the input box
     input_surface = font.render(input_text, True, TEXT_COLOR)
     screen.blit(input_surface, (input_box.x + 10, input_box.y + 10))
+    
 
 while True:
     for event in pygame.event.get():
