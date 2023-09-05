@@ -33,7 +33,7 @@ font = pygame.font.Font(None, FONT_SIZE)
 
 # Input box for damping factor
 input_box = pygame.Rect(10, 10, TEXT_BOX_WIDTH, TEXT_BOX_HEIGHT)
-damping_factor = 0.9
+damping_factor = 0.5
 input_text = "Damping: {}".format(damping_factor)
 active_input = False
 
@@ -78,7 +78,7 @@ while True:
         elif damping_factor < 0:
             damping_factor = 0
             input_text = "Damping: {}".format(damping_factor)
-
+    damping_factor = 1 - damping_factor
 
     # Update the ball's position
     ball_x += ball_speed_x
