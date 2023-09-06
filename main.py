@@ -7,7 +7,7 @@ import pygame
 from pygame.locals import *
 from pygame.color import THECOLORS
 
-colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "black", "white"]
+colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "white"]
 
 
 
@@ -175,6 +175,12 @@ while True:
     for ball in balls:
         ball.move()
         ball.draw(screen)
+        #text for velocity rounded to 2 decimal places
+        font = pygame.font.SysFont("Arial", 15)
+        text = font.render("Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0))
+        screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
+
+
 
 
     # Check for boundary collisions
