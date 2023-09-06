@@ -7,6 +7,8 @@ import pygame
 from pygame.locals import *
 from pygame.color import THECOLORS
 
+colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "black", "white"]
+
 
 
 #screen
@@ -43,13 +45,14 @@ class Vector2:
         self.y += v.y
 
     def sub(self, v):
-        self.x -= v.x
-        self.y -= v.y
+        self.x -= v
+        self.y -= v
 
     def mult(self, n):
         self.x *= n
         self.y *= n
-        
+
+
 
     def div(self, n):
         self.x /= n
@@ -71,7 +74,10 @@ class Vector2:
     def normalize(self):
         mag = self.mag()
         if mag != 0:
-            self.div(mag)
+            return Vector2(self.x / mag, self.y / mag)
+        else:
+            return Vector2(0, 0)  # Return a zero vector if the magnitude is zero
+
 
     def limit(self, max_magnitude):
         if self.mag() > max_magnitude:
@@ -95,11 +101,12 @@ class Vector2:
         return "({}, {})".format(self.x, self.y)
 
 class Ball:
-    def __init__(self, x, y, radius, color, velocity=Vector2(0, 0)):
+    def __init__(self, x, y, radius, color, velocity=Vector2(0, 0), mass=1):
         self.pos = Vector2(x, y)
         self.radius = radius
         self.color = color
         self.velocity = velocity
+        self.mass = mass
 
     def move(self):
         self.pos.add(self.velocity)
@@ -114,53 +121,43 @@ class Ball:
             self.velocity.y *= -1
     
     def check_ball_collision(self, other_ball):
-        # Calculate the relative velocity as the difference between the velocities of the two balls
-        relative_velocity = Vector2(other_ball.velocity.x - self.velocity.x, other_ball.velocity.y - self.velocity.y)
-    
-        # Calculate the relative position as the difference between the positions of the two balls
-        relative_position = Vector2(other_ball.pos.x - self.pos.x, other_ball.pos.y - self.pos.y)
-    
-        # Calculate the dot product of relative_position and relative_velocity
-        dot_product = relative_position.dot(relative_velocity)
-    
-        # Check if the dot product is positive (balls are moving towards each other)
-        if dot_product > 0:
-            # Calculate the squared distance between the balls
-            squared_distance = relative_position.x ** 2 + relative_position.y ** 2
-    
-            # Calculate the sum of the squared radii
-            sum_of_radii_squared = (self.radius + other_ball.radius) ** 2
-    
-            # Check if the squared distance is less than the squared sum of radii (collision)
-            if squared_distance < sum_of_radii_squared:
-                # Calculate the distance between the balls
-                distance = math.sqrt(squared_distance)
-    
-                # Calculate the penetration depth
-                penetration_depth = self.radius + other_ball.radius - distance
-    
-                # Calculate the collision normal
-                collision_normal = relative_position.normalize()
-    
-                # Calculate the impulse
-                impulse = (2.0 * relative_velocity.dot(collision_normal)) / (1.0 + 1.0)
-    
-                # Calculate the change in position to resolve the penetration
-                penetration_resolution = collision_normal.mult(penetration_depth / 2.0)
-    
-                # Update positions to resolve penetration
-                self.pos.sub(penetration_resolution)
-                other_ball.pos.add(penetration_resolution)
-    
-                # Update velocities
-                self.velocity.add(collision_normal.mult(impulse))
-                other_ball.velocity.sub(collision_normal.mult(impulse))
-    
+        # Calculate the vector between the centers of the two balls
+        distance_vector = Vector2(other_ball.pos.x - self.pos.x, other_ball.pos.y - self.pos.y)
+
+        # Calculate the distance between the centers of the two balls
+        distance = distance_vector.mag()
+
+        # Check if there is a collision
+        if distance < self.radius + other_ball.radius:
+            # Calculate the collision normal
+            collision_normal = distance_vector.normalize()
+
+            # Calculate the relative velocity
+            relative_velocity = Vector2(other_ball.velocity.x - self.velocity.x, other_ball.velocity.y - self.velocity.y)
+
+            # Calculate the relative velocity in the direction of the collision
+            relative_speed = relative_velocity.dot(collision_normal)
+
+            # Check if the balls are moving toward each other
+            if relative_speed < 0:
+                # Calculate the impulse (change in velocity)
+                impulse = -2.0 * relative_speed / (1 / self.mass + 1 / other_ball.mass)
+
+                # Apply the impulse to both balls
+                self.velocity.add(collision_normal.mult(impulse / self.mass))
+                other_ball.velocity.sub(collision_normal.mult(impulse / other_ball.mass))
+
+                # Move the balls so they are not overlapping
+                overlap = (self.radius + other_ball.radius - distance) / 2.0
+                self.pos.sub(collision_normal.mult(overlap))
+                other_ball.pos.add(collision_normal.mult(overlap))
 
 
 # Create instances of Ball
-ball1 = Ball(200, 200, 20, (0, 0, 255), Vector2(5, 2))
-ball2 = Ball(400, 400, 30, (255, 0, 0), Vector2(-3, -1))
+balls = []
+for i in range(3):
+    balls.append(Ball(random.randint(0, SCREEN_WIDTH-6), random.randint(0, SCREEN_HEIGHT-6), 30, THECOLORS[random.choice(colours_list)], Vector2(random.randint(-5, 5), random.randint(-5, 5))))
+    
 
 while True:
     for event in pygame.event.get():
@@ -172,17 +169,21 @@ while True:
     screen.fill((255, 255, 255))
 
     # Move and draw the balls
-    ball1.move()
-    ball2.move()
-    ball1.draw(screen)
-    ball2.draw(screen)
+    for ball in balls:
+        ball.move()
+        ball.draw(screen)
+
 
     # Check for boundary collisions
-    ball1.check_boundary_collision(SCREEN_WIDTH, SCREEN_HEIGHT)
-    ball2.check_boundary_collision(SCREEN_WIDTH, SCREEN_HEIGHT)
+    for ball in balls:
+        ball.check_boundary_collision(SCREEN_WIDTH, SCREEN_HEIGHT)
+
 
     # Check for ball-ball collisions
-    ball1.check_ball_collision(ball2)
+    for ball in balls:
+        for other_ball in balls:
+            if ball != other_ball:
+                ball.check_ball_collision(other_ball)
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)
