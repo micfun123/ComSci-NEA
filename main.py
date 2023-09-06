@@ -49,6 +49,7 @@ class Vector2:
     def mult(self, n):
         self.x *= n
         self.y *= n
+        
 
     def div(self, n):
         self.x /= n
@@ -58,7 +59,11 @@ class Vector2:
         return math.sqrt(self.x * self.x + self.y * self.y)
     
     def dot(self, v):
+        if v is None:
+            print("Error: 'v' is None")
+            return 0  # Return a default value or raise an exception
         return self.x * v.x + self.y * v.y
+
     
     def cross(self, v):
         return self.x * v.y - self.y * v.x
@@ -107,25 +112,51 @@ class Ball:
             self.velocity.x *= -1
         if self.pos.y - self.radius < 0 or self.pos.y + self.radius > screen_height:
             self.velocity.y *= -1
-
+    
     def check_ball_collision(self, other_ball):
-        distance = Vector2.distance(self.pos, other_ball.pos)
-        if distance < self.radius + other_ball.radius:
-            # Calculate the collision normal (unit vector pointing from self to other_ball)
-            collision_normal = Vector2.normalize(Vector2(other_ball.pos.x - self.pos.x, other_ball.pos.y - self.pos.y))
+        # Calculate the relative velocity as the difference between the velocities of the two balls
+        relative_velocity = Vector2(other_ball.velocity.x - self.velocity.x, other_ball.velocity.y - self.velocity.y)
+    
+        # Calculate the relative position as the difference between the positions of the two balls
+        relative_position = Vector2(other_ball.pos.x - self.pos.x, other_ball.pos.y - self.pos.y)
+    
+        # Calculate the dot product of relative_position and relative_velocity
+        dot_product = relative_position.dot(relative_velocity)
+    
+        # Check if the dot product is positive (balls are moving towards each other)
+        if dot_product > 0:
+            # Calculate the squared distance between the balls
+            squared_distance = relative_position.x ** 2 + relative_position.y ** 2
+    
+            # Calculate the sum of the squared radii
+            sum_of_radii_squared = (self.radius + other_ball.radius) ** 2
+    
+            # Check if the squared distance is less than the squared sum of radii (collision)
+            if squared_distance < sum_of_radii_squared:
+                # Calculate the distance between the balls
+                distance = math.sqrt(squared_distance)
+    
+                # Calculate the penetration depth
+                penetration_depth = self.radius + other_ball.radius - distance
+    
+                # Calculate the collision normal
+                collision_normal = relative_position.normalize()
+    
+                # Calculate the impulse
+                impulse = (2.0 * relative_velocity.dot(collision_normal)) / (1.0 + 1.0)
+    
+                # Calculate the change in position to resolve the penetration
+                penetration_resolution = collision_normal.mult(penetration_depth / 2.0)
+    
+                # Update positions to resolve penetration
+                self.pos.sub(penetration_resolution)
+                other_ball.pos.add(penetration_resolution)
+    
+                # Update velocities
+                self.velocity.add(collision_normal.mult(impulse))
+                other_ball.velocity.sub(collision_normal.mult(impulse))
+    
 
-            # Calculate the relative velocity
-            relative_velocity = Vector2(other_ball.velocity.x - self.velocity.x, other_ball.velocity.y - self.velocity.y)
-
-            # Calculate the dot product of relative velocity and collision normal
-            dot_product = relative_velocity.dot(collision_normal)
-
-            # Calculate impulse (change in velocity)
-            impulse = (2.0 * dot_product) / (1.0 + 1.0)  # Assuming equal mass (1.0) for both balls
-
-            # Update velocities
-            self.velocity.add(Vector2(impulse * collision_normal.x, impulse * collision_normal.y))
-            other_ball.velocity.sub(Vector2(impulse * collision_normal.x, impulse * collision_normal.y))
 
 # Create instances of Ball
 ball1 = Ball(200, 200, 20, (0, 0, 255), Vector2(5, 2))
