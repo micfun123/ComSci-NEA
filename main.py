@@ -1,5 +1,3 @@
-# py games billard balls collision
-
 import sys
 import math
 import random
@@ -8,7 +6,6 @@ from pygame.locals import *
 from pygame.color import THECOLORS
 
 colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown"]
-
 
 # screen
 SCREEN_WIDTH = 1200
@@ -29,7 +26,6 @@ def scale(x, y):
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Billard Balls Collision")
-
 
 # vector maths
 class Vector2:
@@ -146,7 +142,7 @@ class Ball:
             # Check if the balls are moving toward each other
             if relative_speed < 0:
                 # Calculate the impulse scalar
-                impulse_scalar = -(1 + 0.9) * relative_speed
+                impulse_scalar = -(1 + damping_factor) * relative_speed
                 impulse_scalar /= 1 / self.mass + 1 / other_ball.mass
 
                 # Apply impulses
@@ -180,15 +176,65 @@ for i in range(6):
         )
     )
 
+# Set the initial damping factor
+damping_factor = 0.9
+
+# Function to update the damping factor
+def set_damping(factor):
+    global damping_factor
+    damping_factor = factor
+
+# Function to prompt user for a new damping factor
+def update_damping():
+    try:
+        damping = float(input("Enter damping factor (0.0 to 1.0): "))
+        if 0.0 <= damping <= 1.0:
+            set_damping(damping)
+        else:
+            print("Damping factor should be between 0.0 and 1.0.")
+    except ValueError:
+        print("Invalid input. Please enter a number between 0.0 and 1.0.")
+font = pygame.font.SysFont("Arial", 20)
+
+# Function to draw a text input box
+def draw_text_input_box(x, y, width, height, text, active):
+    color = (0, 0, 0) if active else (100, 100, 100)
+    pygame.draw.rect(screen, color, (x, y, width, height))
+    text_surface = font.render(text, True, (255, 255, 255))
+    screen.blit(text_surface, (x + 5, y + 5))
+
+# Initialize the damping factor input
+input_box = pygame.Rect(10, 10, 200, 30)
+input_text = ""
+input_active = False
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        elif event.type == KEYDOWN:
+            if event.key == K_d:
+                input_active = not input_active
+            if input_active:
+                if event.key == K_RETURN:
+                    try:
+                        damping = float(input_text)
+                        if 0.0 <= damping <= 1.0:
+                            set_damping(damping)
+                            input_text = ""
+                    except ValueError:
+                        print("Invalid input. Please enter a number between 0.0 and 1.0.")
+                elif event.key == K_BACKSPACE:
+                    input_text = input_text[:-1]
+                else:
+                    input_text += event.unicode
 
     # Clear the screen
     screen.fill((255, 255, 255))
+
+    # Draw the damping factor input box
+    draw_text_input_box(input_box.x, input_box.y, input_box.width, input_box.height, input_text, input_active)
 
     # Move and draw the balls
     for ball in balls:
@@ -213,3 +259,4 @@ while True:
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)
+    print(damping_factor)
