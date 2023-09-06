@@ -140,22 +140,25 @@ class Ball:
 
             # Check if the balls are moving toward each other
             if relative_speed < 0:
-                # Calculate the impulse (change in velocity)
-                impulse = -2.0 * relative_speed / (1 / self.mass + 1 / other_ball.mass)
+                # Calculate the impulse scalar
+                impulse_scalar = -(1 + 0.9) * relative_speed
+                impulse_scalar /= 1 / self.mass + 1 / other_ball.mass
 
-                # Apply the impulse to both balls
-                self.velocity.add(collision_normal.mult(impulse / self.mass))
-                other_ball.velocity.sub(collision_normal.mult(impulse / other_ball.mass))
+                # Apply impulses
+                self.velocity.x -= impulse_scalar / self.mass * collision_normal.x
+                self.velocity.y -= impulse_scalar / self.mass * collision_normal.y
+                other_ball.velocity.x += impulse_scalar / other_ball.mass * collision_normal.x
+                other_ball.velocity.y += impulse_scalar / other_ball.mass * collision_normal.y
 
-                # Move the balls so they are not overlapping
-                overlap = (self.radius + other_ball.radius - distance) / 2.0
-                self.pos.sub(collision_normal.mult(overlap))
-                other_ball.pos.add(collision_normal.mult(overlap))
-
-
+                # Move the balls apart
+                overlap = 0.5 * (distance - self.radius - other_ball.radius + 1)
+                self.pos.x -= overlap * collision_normal.x
+                self.pos.y -= overlap * collision_normal.y
+                other_ball.pos.x += overlap * collision_normal.x
+                other_ball.pos.y += overlap * collision_normal.y
 # Create instances of Ball
 balls = []
-for i in range(3):
+for i in range(4):
     balls.append(Ball(random.randint(0, SCREEN_WIDTH-6), random.randint(0, SCREEN_HEIGHT-6), 30, THECOLORS[random.choice(colours_list)], Vector2(random.randint(-5, 5), random.randint(-5, 5))))
     
 
