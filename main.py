@@ -8,8 +8,10 @@ from pygame.color import THECOLORS
 colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown"]
 
 # screen
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 900
+pygame.init()
+screendata = pygame.display.Info()
+SCREEN_WIDTH = screendata.current_w -25
+SCREEN_HEIGHT = screendata.current_h -25
 
 simMinWidth = 2
 cscale = SCREEN_WIDTH / simMinWidth, SCREEN_HEIGHT / simMinWidth
@@ -23,7 +25,7 @@ def scale(x, y):
 
 
 # init
-pygame.init()
+
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Billard Balls Collision")
 
@@ -168,8 +170,8 @@ balls = []
 for i in range(6):
     balls.append(
         Ball(
-            random.randint(0, SCREEN_WIDTH - 6),
-            random.randint(0, SCREEN_HEIGHT - 6),
+            random.randint(0+5, SCREEN_WIDTH - 6),
+            random.randint(0+5, SCREEN_HEIGHT - 6),
             30,
             THECOLORS[random.choice(colours_list)],
             Vector2(random.randint(-5, 5), random.randint(-5, 5)),
