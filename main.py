@@ -181,7 +181,7 @@ for i in range(7):
 
 
 # Set the initial damping factor
-damping_factor = 0.9
+damping_factor = 0.6
 
 # Function to update the damping factor
 def set_damping(factor):
