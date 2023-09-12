@@ -11,7 +11,7 @@ colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "b
 pygame.init()
 screendata = pygame.display.Info()
 SCREEN_WIDTH = screendata.current_w -25
-SCREEN_HEIGHT = screendata.current_h -25
+SCREEN_HEIGHT = screendata.current_h -30
 
 simMinWidth = 2
 cscale = SCREEN_WIDTH / simMinWidth, SCREEN_HEIGHT / simMinWidth
@@ -97,12 +97,13 @@ class Vector2:
 
 
 class Ball:
-    def __init__(self, x, y, radius, color, velocity=Vector2(0, 0), mass=1):
+    def __init__(self, x, y, mass, color, velocity=Vector2(0, 0)):
         self.pos = Vector2(x, y)
-        self.radius = radius
+        self.mass = mass
+        # Calculate the radius based on the mass (you can adjust the scaling factor as needed)
+        self.radius = int(math.sqrt(mass) * 20)
         self.color = color
         self.velocity = velocity
-        self.mass = mass
 
     def move(self):
         self.pos.add(self.velocity)
@@ -113,10 +114,10 @@ class Ball:
         )
 
     def check_boundary_collision(self, screen_width, screen_height):
-        if self.pos.x - self.radius < 0 or self.pos.x + self.radius > screen_width:
-            self.velocity.x *= -1
-        if self.pos.y - self.radius < 0 or self.pos.y + self.radius > screen_height:
-            self.velocity.y *= -1
+        if self.pos.x - self.radius < 0 or self.pos.x + self.radius > screen_width: # left or right wall
+            self.velocity.x *= -1 # reverse x velocity
+        if self.pos.y - self.radius < 0 or self.pos.y + self.radius > screen_height: #ceiling or floor collition
+            self.velocity.y *= -1 # reverse y velocity
 
     def check_ball_collision(self, other_ball):
         # Calculate the vector between the centers of the two balls
@@ -167,16 +168,17 @@ class Ball:
 
 # Create instances of Ball
 balls = []
-for i in range(6):
+for i in range(7):
     balls.append(
         Ball(
-            random.randint(0+5, SCREEN_WIDTH - 6),
-            random.randint(0+5, SCREEN_HEIGHT - 6),
-            30,
-            THECOLORS[random.choice(colours_list)],
+            random.randint(100, SCREEN_WIDTH - 100),
+            random.randint(100, SCREEN_HEIGHT - 100),
+            random.randint(1, 10),
+            THECOLORS[colours_list[random.randint(0, 7)]],
             Vector2(random.randint(-5, 5), random.randint(-5, 5)),
         )
     )
+
 
 # Set the initial damping factor
 damping_factor = 0.9
@@ -245,7 +247,7 @@ while True:
         # text for velocity rounded to 2 decimal places
         font = pygame.font.SysFont("Arial", 15)
         text = font.render(
-            "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
+            "Velocity: " + str(round(ball.velocity.mag(), 2)) + " Mass: " + str(ball.mass), True,(0, 0, 0)
         )
         screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
 
