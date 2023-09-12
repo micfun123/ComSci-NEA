@@ -247,9 +247,12 @@ while True:
         # text for velocity rounded to 2 decimal places
         font = pygame.font.SysFont("Arial", 15)
         text = font.render(
-            "Velocity: " + str(round(ball.velocity.mag(), 2)) + " Mass: " + str(ball.mass), True,(0, 0, 0)
+            "Velocity: " + str(round(ball.velocity.mag(), 2)), True,(0, 0, 0)
         )
         screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
+        # text for mass
+        text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
+        screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
 
     # Check for boundary collisions
     for ball in balls:
