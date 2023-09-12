@@ -10,8 +10,8 @@ colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "b
 # screen
 pygame.init()
 screendata = pygame.display.Info()
-SCREEN_WIDTH = screendata.current_w -25
-SCREEN_HEIGHT = screendata.current_h -30
+SCREEN_WIDTH = screendata.current_w - 25
+SCREEN_HEIGHT = screendata.current_h - 30
 
 simMinWidth = 2
 cscale = SCREEN_WIDTH / simMinWidth, SCREEN_HEIGHT / simMinWidth
@@ -28,6 +28,7 @@ def scale(x, y):
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Billard Balls Collision")
+
 
 # vector maths
 class Vector2:
@@ -114,10 +115,14 @@ class Ball:
         )
 
     def check_boundary_collision(self, screen_width, screen_height):
-        if self.pos.x - self.radius < 0 or self.pos.x + self.radius > screen_width: # left or right wall
-            self.velocity.x *= -1 # reverse x velocity
-        if self.pos.y - self.radius < 0 or self.pos.y + self.radius > screen_height: #ceiling or floor collition
-            self.velocity.y *= -1 # reverse y velocity
+        if (
+            self.pos.x - self.radius < 0 or self.pos.x + self.radius > screen_width
+        ):  # left or right wall
+            self.velocity.x *= -1  # reverse x velocity
+        if (
+            self.pos.y - self.radius < 0 or self.pos.y + self.radius > screen_height
+        ):  # ceiling or floor collition
+            self.velocity.y *= -1  # reverse y velocity
 
     def check_ball_collision(self, other_ball):
         # Calculate the vector between the centers of the two balls
@@ -183,10 +188,12 @@ for i in range(7):
 # Set the initial damping factor
 damping_factor = 0.6
 
+
 # Function to update the damping factor
 def set_damping(factor):
     global damping_factor
     damping_factor = factor
+
 
 # Function to prompt user for a new damping factor
 def update_damping():
@@ -198,7 +205,10 @@ def update_damping():
             print("Damping factor should be between 0.0 and 1.0.")
     except ValueError:
         print("Invalid input. Please enter a number between 0.0 and 1.0.")
+
+
 font = pygame.font.SysFont("Arial", 20)
+
 
 # Function to draw a text input box
 def draw_text_input_box(x, y, width, height, text, active):
@@ -206,6 +216,7 @@ def draw_text_input_box(x, y, width, height, text, active):
     pygame.draw.rect(screen, color, (x, y, width, height))
     text_surface = font.render(text, True, (255, 255, 255))
     screen.blit(text_surface, (x + 5, y + 5))
+
 
 # Initialize the damping factor input
 input_box = pygame.Rect(10, 10, 200, 30)
@@ -228,7 +239,9 @@ while True:
                             set_damping(damping)
                             input_text = ""
                     except ValueError:
-                        print("Invalid input. Please enter a number between 0.0 and 1.0.")
+                        print(
+                            "Invalid input. Please enter a number between 0.0 and 1.0."
+                        )
                 elif event.key == K_BACKSPACE:
                     input_text = input_text[:-1]
                 else:
@@ -238,7 +251,14 @@ while True:
     screen.fill((255, 255, 255))
 
     # Draw the damping factor input box
-    draw_text_input_box(input_box.x, input_box.y, input_box.width, input_box.height, input_text, input_active)
+    draw_text_input_box(
+        input_box.x,
+        input_box.y,
+        input_box.width,
+        input_box.height,
+        input_text,
+        input_active,
+    )
 
     # Move and draw the balls
     for ball in balls:
@@ -247,7 +267,7 @@ while True:
         # text for velocity rounded to 2 decimal places
         font = pygame.font.SysFont("Arial", 15)
         text = font.render(
-            "Velocity: " + str(round(ball.velocity.mag(), 2)), True,(0, 0, 0)
+            "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
         )
         screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
         # text for mass
