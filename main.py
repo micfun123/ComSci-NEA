@@ -36,61 +36,61 @@ class Vector2:
         self.x = x
         self.y = y
 
-    def set(self, v):
+    def set(self, v) -> None:
         self.x = v.x
         self.y = v.y
 
-    def add(self, v):
+    def add(self, v) -> None:
         self.x += v.x
         self.y += v.y
 
-    def sub(self, v):
+    def sub(self, v) -> None:
         self.x -= v
         self.y -= v
 
-    def mult(self, n):
+    def mult(self, n) -> None:
         self.x *= n
         self.y *= n
 
-    def div(self, n):
+    def div(self, n) -> None:
         self.x /= n
         self.y /= n
 
-    def mag(self):
+    def mag(self) -> float:
         return math.sqrt(self.x * self.x + self.y * self.y)
 
-    def dot(self, v):
+    def dot(self, v) -> float:
         if v is None:
             print("Error: 'v' is None")
             return 0  # Return a default value or raise an exception
         return self.x * v.x + self.y * v.y
 
-    def cross(self, v):
+    def cross(self, v) -> float:
         return self.x * v.y - self.y * v.x
 
-    def normalize(self):
+    def normalize(self) -> None:
         mag = self.mag()
         if mag != 0:
             return Vector2(self.x / mag, self.y / mag)
         else:
             return Vector2(0, 0)  # Return a zero vector if the magnitude is zero
 
-    def limit(self, max_magnitude):
+    def limit(self, max_magnitude) -> None:
         if self.mag() > max_magnitude:
             self.normalize()
             self.mult(max_magnitude)
 
     @staticmethod
-    def distance(v1, v2):
+    def distance(v1, v2) -> float:
         dx = v1.x - v2.x
         dy = v1.y - v2.y
         return math.sqrt(dx * dx + dy * dy)
 
-    def copy(self):
+    def copy(self) -> "Vector2":
         return Vector2(self.x, self.y)
 
     @classmethod
-    def clone(cls, v):
+    def clone(cls, v) -> "Vector2":
         return cls(v.x, v.y)
 
     def __str__(self):
