@@ -210,13 +210,17 @@ font = pygame.font.SysFont("Arial", 20)
 
 # Function to draw a text input box
 def draw_text_input_box(x, y, width, height, text, active):
-    color = (0, 0, 0) if active else (100, 100, 100)
+    color = (4, 240, 20) if active else (100, 100, 100)
     pygame.draw.rect(screen, color, (x, y, width, height))
     text_surface = font.render(text, True, (255, 255, 255))
     screen.blit(text_surface, (x + 5, y + 5))
+    # text for damping factor
+    text = font.render("Press D to change Damping: " + str(damping_factor), True, (0, 0, 0))
+    screen.blit(text, (SCREEN_WIDTH-220, 60))
+
 
 # Initialize the damping factor input
-input_box = pygame.Rect(10, 10, 200, 30)
+input_box = pygame.Rect(SCREEN_WIDTH-220, 20, 200, 30)
 input_text = ""
 input_active = False
 
@@ -248,15 +252,7 @@ while True:
     # Clear the screen
     screen.fill((255, 255, 255))
 
-    # Draw the damping factor input box
-    draw_text_input_box(
-        input_box.x,
-        input_box.y,
-        input_box.width,
-        input_box.height,
-        input_text,
-        input_active,
-    )
+
 
     # Draw the control section background
     pygame.draw.rect(screen, control_bg_color, control_section)
@@ -283,6 +279,16 @@ while True:
         for other_ball in balls:
             if ball != other_ball:
                 ball.check_ball_collision(other_ball)
+
+        # Draw the damping factor input box
+    draw_text_input_box(
+        input_box.x,
+        input_box.y,
+        input_box.width,
+        input_box.height,
+        input_text,
+        input_active,
+    )
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)
