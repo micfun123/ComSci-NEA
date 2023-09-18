@@ -13,15 +13,14 @@ screendata = pygame.display.Info()
 SCREEN_WIDTH = screendata.current_w - 50
 SCREEN_HEIGHT = screendata.current_h - 50
 
-simMinWidth = 2
-cscale = SCREEN_WIDTH / simMinWidth, SCREEN_HEIGHT / simMinWidth
 
-simWidth = SCREEN_WIDTH / cscale[0]
-simHeight = SCREEN_HEIGHT / cscale[1]
+# Create a section for controlling initial settings
+control_section = pygame.Rect(SCREEN_WIDTH - 250, 0, 250, SCREEN_HEIGHT)
+control_bg_color = (200, 200, 200)
 
+sim_with = SCREEN_WIDTH - 250
+sim_height = SCREEN_HEIGHT
 
-def scale(x, y):
-    return x * cscale[0], y * cscale[1]
 
 
 # init
@@ -114,13 +113,13 @@ class Ball:
             screen, self.color, (int(self.pos.x), int(self.pos.y)), self.radius
         )
 
-    def check_boundary_collision(self, screen_width, screen_height):
+    def check_boundary_collision(self, simWidth, simHeight):
         if (
-            self.pos.x - self.radius < 0 or self.pos.x + self.radius > screen_width
+            self.pos.x - self.radius < 0 or self.pos.x + self.radius > simWidth
         ):  # left or right wall
             self.velocity.x *= -1  # reverse x velocity
         if (
-            self.pos.y - self.radius < 0 or self.pos.y + self.radius > screen_height
+            self.pos.y - self.radius < 0 or self.pos.y + self.radius > simHeight
         ):  # ceiling or floor collition
             self.velocity.y *= -1  # reverse y velocity
 
@@ -176,7 +175,7 @@ balls = []
 for i in range(7):
     balls.append(
         Ball(
-            random.randint(100, SCREEN_WIDTH - 100),
+            random.randint(100, sim_with-100),
             random.randint(100, SCREEN_HEIGHT - 100),
             random.randint(1, 10),
             THECOLORS[colours_list[random.randint(0, 7)]],
@@ -221,9 +220,6 @@ input_box = pygame.Rect(10, 10, 200, 30)
 input_text = ""
 input_active = False
 
-# Create a section for controlling initial settings
-control_section = pygame.Rect(SCREEN_WIDTH - 250, 0, 250, SCREEN_HEIGHT)
-control_bg_color = (200, 200, 200)
 
 while True:
     for event in pygame.event.get():
@@ -280,7 +276,7 @@ while True:
 
     # Check for boundary collisions
     for ball in balls:
-        ball.check_boundary_collision(SCREEN_WIDTH, SCREEN_HEIGHT)
+        ball.check_boundary_collision(sim_with, SCREEN_HEIGHT)
 
     # Check for ball-ball collisions
     for ball in balls:
