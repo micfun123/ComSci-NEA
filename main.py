@@ -10,18 +10,17 @@ colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "b
 # screen
 pygame.init()
 screendata = pygame.display.Info()
-SCREEN_WIDTH = screendata.current_w - 25
-SCREEN_HEIGHT = screendata.current_h - 30
-
-simMinWidth = 2
-cscale = SCREEN_WIDTH / simMinWidth, SCREEN_HEIGHT / simMinWidth
-
-simWidth = SCREEN_WIDTH / cscale[0]
-simHeight = SCREEN_HEIGHT / cscale[1]
+SCREEN_WIDTH = screendata.current_w - 50
+SCREEN_HEIGHT = screendata.current_h - 50
 
 
-def scale(x, y):
-    return x * cscale[0], y * cscale[1]
+# Create a section for controlling initial settings
+control_section = pygame.Rect(SCREEN_WIDTH - 250, 0, 250, SCREEN_HEIGHT)
+control_bg_color = (200, 200, 200)
+
+sim_with = SCREEN_WIDTH - 250
+sim_height = SCREEN_HEIGHT
+
 
 
 # init
@@ -114,13 +113,13 @@ class Ball:
             screen, self.color, (int(self.pos.x), int(self.pos.y)), self.radius
         )
 
-    def check_boundary_collision(self, screen_width, screen_height):
+    def check_boundary_collision(self, simWidth, simHeight):
         if (
-            self.pos.x - self.radius < 0 or self.pos.x + self.radius > screen_width
+            self.pos.x - self.radius < 0 or self.pos.x + self.radius > simWidth
         ):  # left or right wall
             self.velocity.x *= -1  # reverse x velocity
         if (
-            self.pos.y - self.radius < 0 or self.pos.y + self.radius > screen_height
+            self.pos.y - self.radius < 0 or self.pos.y + self.radius > simHeight
         ):  # ceiling or floor collition
             self.velocity.y *= -1  # reverse y velocity
 
@@ -176,14 +175,14 @@ balls = []
 for i in range(7):
     balls.append(
         Ball(
-            random.randint(100, SCREEN_WIDTH - 100),
+            random.randint(100, sim_with-100),
             random.randint(100, SCREEN_HEIGHT - 100),
             random.randint(1, 10),
             THECOLORS[colours_list[random.randint(0, 7)]],
             Vector2(random.randint(-5, 5), random.randint(-5, 5)),
         )
     )
-
+    
 
 # Set the initial damping factor
 damping_factor = 0.6
@@ -209,19 +208,22 @@ def update_damping():
 
 font = pygame.font.SysFont("Arial", 20)
 
-
 # Function to draw a text input box
 def draw_text_input_box(x, y, width, height, text, active):
-    color = (0, 0, 0) if active else (100, 100, 100)
+    color = (4, 240, 20) if active else (100, 100, 100)
     pygame.draw.rect(screen, color, (x, y, width, height))
     text_surface = font.render(text, True, (255, 255, 255))
     screen.blit(text_surface, (x + 5, y + 5))
+    # text for damping factor
+    text = font.render("Press D to change Damping: " + str(damping_factor), True, (0, 0, 0))
+    screen.blit(text, (SCREEN_WIDTH-220, 60))
 
 
 # Initialize the damping factor input
-input_box = pygame.Rect(10, 10, 200, 30)
+input_box = pygame.Rect(SCREEN_WIDTH-220, 20, 200, 30)
 input_text = ""
 input_active = False
+
 
 while True:
     for event in pygame.event.get():
@@ -250,17 +252,11 @@ while True:
     # Clear the screen
     screen.fill((255, 255, 255))
 
-    # Draw the damping factor input box
-    draw_text_input_box(
-        input_box.x,
-        input_box.y,
-        input_box.width,
-        input_box.height,
-        input_text,
-        input_active,
-    )
 
-    # Move and draw the balls
+
+    # Draw the control section background
+    pygame.draw.rect(screen, control_bg_color, control_section)
+        # Move and draw the balls
     for ball in balls:
         ball.move()
         ball.draw(screen)
@@ -276,13 +272,23 @@ while True:
 
     # Check for boundary collisions
     for ball in balls:
-        ball.check_boundary_collision(SCREEN_WIDTH, SCREEN_HEIGHT)
+        ball.check_boundary_collision(sim_with, SCREEN_HEIGHT)
 
     # Check for ball-ball collisions
     for ball in balls:
         for other_ball in balls:
             if ball != other_ball:
                 ball.check_ball_collision(other_ball)
+
+        # Draw the damping factor input box
+    draw_text_input_box(
+        input_box.x,
+        input_box.y,
+        input_box.width,
+        input_box.height,
+        input_text,
+        input_active,
+    )
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)
