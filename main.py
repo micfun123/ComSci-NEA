@@ -225,6 +225,7 @@ font = pygame.font.SysFont("Arial", 20)
 
 # Function to draw a text input box
 def draw_text_input_box(x, y, width, height, text, active):
+    # Draw the input box with a gray border or a green border if active
     color = (4, 240, 20) if active else (100, 100, 100)
     pygame.draw.rect(screen, color, (x, y, width, height))
     text_surface = font.render(text, True, (255, 255, 255))
@@ -350,4 +351,3 @@ while True:
         )
         pygame.display.flip()
         pygame.time.Clock().tick(60)
-        
