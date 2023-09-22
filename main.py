@@ -241,6 +241,7 @@ input_box = pygame.Rect(SCREEN_WIDTH - 220, 20, 200, 30)
 input_text = ""
 input_active = False
 
+is_paused = False
 
 while True:
     for event in pygame.event.get():
@@ -250,6 +251,8 @@ while True:
         elif event.type == KEYDOWN:
             if event.key == K_d:
                 input_active = not input_active
+            if event.key == K_SPACE:
+                is_paused = not is_paused  # Toggle pause/play
             if input_active:
                 if event.key == K_RETURN:
                     try:
@@ -266,45 +269,49 @@ while True:
                 else:
                     input_text += event.unicode
 
-    # Clear the screen
-    screen.fill((255, 255, 255))
+    if not is_paused:
+        # Clear the screen
+        screen.fill((255, 255, 255))
 
-    # Draw the control section background
-    pygame.draw.rect(screen, control_bg_color, control_section)
-    # Move and draw the balls
-    for ball in balls:
-        ball.move()
-        ball.draw(screen)
-        # text for velocity rounded to 2 decimal places
-        font = pygame.font.SysFont("Arial", 15)
-        text = font.render(
-            "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
+        # Draw the control section background
+        pygame.draw.rect(screen, control_bg_color, control_section)
+        # Move and draw the balls
+        for ball in balls:
+            ball.move()
+            ball.draw(screen)
+            # text for velocity rounded to 2 decimal places
+            font = pygame.font.SysFont("Arial", 15)
+            text = font.render(
+                "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
+            )
+            screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
+            # text for mass
+            text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
+            screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
+
+        # Check for boundary collisions
+        for ball in balls:
+            ball.check_boundary_collision(sim_with, SCREEN_HEIGHT)
+
+        # Check for ball-ball collisions
+        for ball in balls:
+            for other_ball in balls:
+                if ball != other_ball:
+                    ball.check_ball_collision(other_ball)
+
+        # Draw the damping factor input box
+        draw_text_input_box(
+            input_box.x,
+            input_box.y,
+            input_box.width,
+            input_box.height,
+            input_text,
+            input_active,
         )
-        screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
-        # text for mass
-        text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
-        screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
 
-    # Check for boundary collisions
-    for ball in balls:
-        ball.check_boundary_collision(sim_with, SCREEN_HEIGHT)
-
-    # Check for ball-ball collisions
-    for ball in balls:
-        for other_ball in balls:
-            if ball != other_ball:
-                ball.check_ball_collision(other_ball)
-
-    # Draw the damping factor input box
-    draw_text_input_box(
-        input_box.x,
-        input_box.y,
-        input_box.width,
-        input_box.height,
-        input_text,
-        input_active,
-    )
-
-    pygame.display.flip()
-    pygame.time.Clock().tick(60)
-    print(damping_factor)
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
+        print(damping_factor)
+    else:
+        # If paused, you can display a pause message or do nothing
+        pass

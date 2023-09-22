@@ -4,7 +4,7 @@ import random
 import pygame
 from pygame.locals import *
 from pygame.color import THECOLORS
-from Vector2 import Vector2
+from CLASSES.Vector2 import Vector2
 
 colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown"]
 
