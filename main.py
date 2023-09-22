@@ -22,51 +22,60 @@ sim_with = SCREEN_WIDTH - 250
 sim_height = SCREEN_HEIGHT
 
 
-
 # init
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Billard Balls Collision")
 
 
-# vector maths
+# Define a Vector2 class for 2D vector operations.
 class Vector2:
+    # Initialize a vector with x and y coordinates.
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
+    # Set the current vector's coordinates to match another vector 'v'.
     def set(self, v) -> None:
         self.x = v.x
         self.y = v.y
 
+    # Add another vector 'v' to the current vector.
     def add(self, v) -> None:
         self.x += v.x
         self.y += v.y
 
+    # Subtract a scalar value 'v' from both x and y coordinates.
     def sub(self, v) -> None:
         self.x -= v
         self.y -= v
 
+    # Multiply both x and y coordinates by a scalar 'n'.
     def mult(self, n) -> None:
         self.x *= n
         self.y *= n
 
+    # Divide both x and y coordinates by a scalar 'n'.
     def div(self, n) -> None:
         self.x /= n
         self.y /= n
 
+    # Calculate the magnitude (length) of the vector.
     def mag(self) -> float:
         return math.sqrt(self.x * self.x + self.y * self.y)
 
+    # Calculate the dot product of the vector with another vector 'v'.
     def dot(self, v) -> float:
         if v is None:
             print("Error: 'v' is None")
             return 0  # Return a default value or raise an exception
         return self.x * v.x + self.y * v.y
 
+    # Calculate the cross product of the vector with another vector 'v'.
     def cross(self, v) -> float:
         return self.x * v.y - self.y * v.x
 
+    # Normalize the vector (make it a unit vector with a magnitude of 1).
     def normalize(self) -> None:
         mag = self.mag()
         if mag != 0:
@@ -74,24 +83,29 @@ class Vector2:
         else:
             return Vector2(0, 0)  # Return a zero vector if the magnitude is zero
 
+    # Limit the magnitude of the vector to a maximum value.
     def limit(self, max_magnitude) -> None:
         if self.mag() > max_magnitude:
             self.normalize()
             self.mult(max_magnitude)
 
+    # Calculate the Euclidean distance between two vectors 'v1' and 'v2'.
     @staticmethod
     def distance(v1, v2) -> float:
         dx = v1.x - v2.x
         dy = v1.y - v2.y
         return math.sqrt(dx * dx + dy * dy)
 
+    # Create a copy of the vector.
     def copy(self) -> "Vector2":
         return Vector2(self.x, self.y)
 
+    # Create a clone of the vector 'v'.
     @classmethod
     def clone(cls, v) -> "Vector2":
         return cls(v.x, v.y)
 
+    # Provide a string representation of the vector.
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
 
@@ -175,14 +189,14 @@ balls = []
 for i in range(7):
     balls.append(
         Ball(
-            random.randint(100, sim_with-100),
+            random.randint(100, sim_with - 100),
             random.randint(100, SCREEN_HEIGHT - 100),
             random.randint(1, 10),
             THECOLORS[colours_list[random.randint(0, 7)]],
             Vector2(random.randint(-5, 5), random.randint(-5, 5)),
         )
     )
-    
+
 
 # Set the initial damping factor
 damping_factor = 0.6
@@ -208,6 +222,7 @@ def update_damping():
 
 font = pygame.font.SysFont("Arial", 20)
 
+
 # Function to draw a text input box
 def draw_text_input_box(x, y, width, height, text, active):
     color = (4, 240, 20) if active else (100, 100, 100)
@@ -215,12 +230,14 @@ def draw_text_input_box(x, y, width, height, text, active):
     text_surface = font.render(text, True, (255, 255, 255))
     screen.blit(text_surface, (x + 5, y + 5))
     # text for damping factor
-    text = font.render("Press D to change Damping: " + str(damping_factor), True, (0, 0, 0))
-    screen.blit(text, (SCREEN_WIDTH-220, 60))
+    text = font.render(
+        "Press D to change Damping: " + str(damping_factor), True, (0, 0, 0)
+    )
+    screen.blit(text, (SCREEN_WIDTH - 220, 60))
 
 
 # Initialize the damping factor input
-input_box = pygame.Rect(SCREEN_WIDTH-220, 20, 200, 30)
+input_box = pygame.Rect(SCREEN_WIDTH - 220, 20, 200, 30)
 input_text = ""
 input_active = False
 
@@ -252,11 +269,9 @@ while True:
     # Clear the screen
     screen.fill((255, 255, 255))
 
-
-
     # Draw the control section background
     pygame.draw.rect(screen, control_bg_color, control_section)
-        # Move and draw the balls
+    # Move and draw the balls
     for ball in balls:
         ball.move()
         ball.draw(screen)
@@ -280,7 +295,7 @@ while True:
             if ball != other_ball:
                 ball.check_ball_collision(other_ball)
 
-        # Draw the damping factor input box
+    # Draw the damping factor input box
     draw_text_input_box(
         input_box.x,
         input_box.y,
