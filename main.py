@@ -241,7 +241,32 @@ input_box = pygame.Rect(SCREEN_WIDTH - 220, 20, 200, 30)
 input_text = ""
 input_active = False
 
-is_paused = False
+is_paused = True
+
+#initual drawing
+screen.fill((255, 255, 255))
+pygame.draw.rect(screen, control_bg_color, control_section)
+for ball in balls:
+    ball.draw(screen)
+    # text for velocity rounded to 2 decimal places
+    font = pygame.font.SysFont("Arial", 15)
+    text = font.render(
+        "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
+    )
+    screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
+    # text for mass
+    text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
+    screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
+    draw_text_input_box(
+            input_box.x,
+            input_box.y,
+            input_box.width,
+            input_box.height,
+            input_text,
+            input_active,
+        )
+pygame.display.flip()
+
 
 while True:
     for event in pygame.event.get():
@@ -313,5 +338,16 @@ while True:
         pygame.time.Clock().tick(60)
         print(damping_factor)
     else:
-        # If paused, you can display a pause message or do nothing
-        pass
+        # If paused, just draw the control section background
+        pygame.draw.rect(screen, control_bg_color, control_section)
+        draw_text_input_box(
+            input_box.x,
+            input_box.y,
+            input_box.width,
+            input_box.height,
+            input_text,
+            input_active,
+        )
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
+        
