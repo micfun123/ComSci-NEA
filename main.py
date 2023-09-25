@@ -194,7 +194,6 @@ balls.append(
         THECOLORS[colours_list[random.randint(0, 7)]],
         Vector2(random.randint(-5, 5), random.randint(-5, 5)),
     )
-
 )
 
 
@@ -235,7 +234,7 @@ def draw_text_input_box(x, y, width, height, text, active):
         "Press D to change Damping: " + str(damping_factor), True, (0, 0, 0)
     )
     screen.blit(text, (SCREEN_WIDTH - 220, 60))
-    #draw in the ball numbers and how to increase and clearn them
+    # draw in the ball numbers and how to increase and clearn them
     text = font.render("Press UP to add a ball", True, (0, 0, 0))
     screen.blit(text, (SCREEN_WIDTH - 220, 100))
     text = font.render("Press C to clear all balls", True, (0, 0, 0))
@@ -245,7 +244,6 @@ def draw_text_input_box(x, y, width, height, text, active):
     pygame.display.flip()
 
 
-
 # Initialize the damping factor input
 input_box = pygame.Rect(SCREEN_WIDTH - 220, 20, 200, 30)
 input_text = ""
@@ -253,7 +251,7 @@ input_active = False
 
 is_paused = True
 
-#initual drawing
+# initual drawing
 screen.fill((255, 255, 255))
 pygame.draw.rect(screen, control_bg_color, control_section)
 for ball in balls:
@@ -268,15 +266,14 @@ for ball in balls:
     text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
     screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
     draw_text_input_box(
-            input_box.x,
-            input_box.y,
-            input_box.width,
-            input_box.height,
-            input_text,
-            input_active,
-        )
+        input_box.x,
+        input_box.y,
+        input_box.width,
+        input_box.height,
+        input_text,
+        input_active,
+    )
 pygame.display.flip()
-
 
 
 while True:
@@ -305,7 +302,12 @@ while True:
                 else:
                     input_text += event.unicode
             if event.key == K_UP:
-                balls.append(
+                #if there are more than 7 balls
+                if len(balls) >= 7:
+                    #remove the first ball
+                    pass
+                else:
+                    balls.append(
                     Ball(
                         random.randint(100, sim_with - 100),
                         random.randint(100, SCREEN_HEIGHT - 100),
@@ -314,24 +316,24 @@ while True:
                         Vector2(random.randint(-5, 5), random.randint(-5, 5)),
                     )
                 )
-            #clear all balls
+            # clear all balls
             if event.key == K_c:
                 balls = []
 
-    #draw a ball
+    # draw a ball
     for ball in balls:
-            ball.draw(screen)
-            # text for velocity rounded to 2 decimal places
-            font = pygame.font.SysFont("Arial", 15)
-            text = font.render(
-                "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
-            )
-            screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
-            # text for mass
-            text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
-            screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
-            #in the control section have text for amount of balls
-            
+        ball.draw(screen)
+        # text for velocity rounded to 2 decimal places
+        font = pygame.font.SysFont("Arial", 15)
+        text = font.render(
+            "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
+        )
+        screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
+        # text for mass
+        text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
+        screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
+        # in the control section have text for amount of balls
+
     if not is_paused:
         # Clear the screen
         screen.fill((255, 255, 255))
