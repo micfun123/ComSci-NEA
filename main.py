@@ -186,16 +186,16 @@ class Ball:
 
 # Create instances of Ball
 balls = []
-for i in range(7):
-    balls.append(
-        Ball(
-            random.randint(100, sim_with - 100),
-            random.randint(100, SCREEN_HEIGHT - 100),
-            random.randint(1, 10),
-            THECOLORS[colours_list[random.randint(0, 7)]],
-            Vector2(random.randint(-5, 5), random.randint(-5, 5)),
-        )
+balls.append(
+    Ball(
+        random.randint(100, sim_with - 100),
+        random.randint(100, SCREEN_HEIGHT - 100),
+        random.randint(1, 10),
+        THECOLORS[colours_list[random.randint(0, 7)]],
+        Vector2(random.randint(-5, 5), random.randint(-5, 5)),
     )
+
+)
 
 
 # Set the initial damping factor
@@ -220,7 +220,7 @@ def update_damping():
         print("Invalid input. Please enter a number between 0.0 and 1.0.")
 
 
-font = pygame.font.SysFont("Arial", 20)
+font = pygame.font.SysFont("Arial", 15)
 
 
 # Function to draw a text input box
@@ -235,6 +235,15 @@ def draw_text_input_box(x, y, width, height, text, active):
         "Press D to change Damping: " + str(damping_factor), True, (0, 0, 0)
     )
     screen.blit(text, (SCREEN_WIDTH - 220, 60))
+    #draw in the ball numbers and how to increase and clearn them
+    text = font.render("Press UP to add a ball", True, (0, 0, 0))
+    screen.blit(text, (SCREEN_WIDTH - 220, 100))
+    text = font.render("Press C to clear all balls", True, (0, 0, 0))
+    screen.blit(text, (SCREEN_WIDTH - 220, 120))
+    text = font.render(f"There are {len(balls)} balls", True, (0, 0, 0))
+    screen.blit(text, (SCREEN_WIDTH - 220, 140))
+    pygame.display.flip()
+
 
 
 # Initialize the damping factor input
@@ -269,6 +278,7 @@ for ball in balls:
 pygame.display.flip()
 
 
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -294,7 +304,34 @@ while True:
                     input_text = input_text[:-1]
                 else:
                     input_text += event.unicode
+            if event.key == K_UP:
+                balls.append(
+                    Ball(
+                        random.randint(100, sim_with - 100),
+                        random.randint(100, SCREEN_HEIGHT - 100),
+                        random.randint(1, 10),
+                        THECOLORS[colours_list[random.randint(0, 7)]],
+                        Vector2(random.randint(-5, 5), random.randint(-5, 5)),
+                    )
+                )
+            #clear all balls
+            if event.key == K_c:
+                balls = []
 
+    #draw a ball
+    for ball in balls:
+            ball.draw(screen)
+            # text for velocity rounded to 2 decimal places
+            font = pygame.font.SysFont("Arial", 15)
+            text = font.render(
+                "Velocity: " + str(round(ball.velocity.mag(), 2)), True, (0, 0, 0)
+            )
+            screen.blit(text, (ball.pos.x - 30, ball.pos.y - 30))
+            # text for mass
+            text = font.render("Mass: " + str(ball.mass), True, (0, 0, 0))
+            screen.blit(text, (ball.pos.x - 30, ball.pos.y - 15))
+            #in the control section have text for amount of balls
+            
     if not is_paused:
         # Clear the screen
         screen.fill((255, 255, 255))
