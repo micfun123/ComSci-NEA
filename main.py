@@ -302,25 +302,26 @@ while True:
                 else:
                     input_text += event.unicode
             if event.key == K_UP:
-                #if there are more than 7 balls
+                # if there are more than 7 balls
                 if len(balls) >= 7:
-                    #remove the first ball
+                    # remove the first ball
                     pass
                 else:
                     balls.append(
-                    Ball(
-                        random.randint(100, sim_with - 100),
-                        random.randint(100, SCREEN_HEIGHT - 100),
-                        random.randint(1, 10),
-                        THECOLORS[colours_list[random.randint(0, 7)]],
-                        Vector2(random.randint(-5, 5), random.randint(-5, 5)),
+                        Ball(
+                            random.randint(100, sim_with - 100),
+                            random.randint(100, SCREEN_HEIGHT - 100),
+                            random.randint(1, 10),
+                            THECOLORS[colours_list[random.randint(0, 7)]],
+                            Vector2(random.randint(-5, 5), random.randint(-5, 5)),
+                        )
                     )
-                )
             # clear all balls
             if event.key == K_c:
                 balls = []
 
     # draw a ball
+    screen.fill((255, 255, 255))
     for ball in balls:
         ball.draw(screen)
         # text for velocity rounded to 2 decimal places
