@@ -315,20 +315,25 @@ while True:
                         #make a pop up window to ask for the velocity (number input). make the main TK windown hidden
                         wanted_veocity.x = simpledialog.askfloat("Input", "Enter the x velocity")
                         wanted_veocity.y = simpledialog.askfloat("Input", "Enter the y velocity")
-
-                        balls.append(
-                            Ball(
-                                random.randint(100, sim_with - 100),
-                                random.randint(100, SCREEN_HEIGHT - 100),
-                                random.randint(1, 10),
-                                THECOLORS[colours_list[random.randint(0, 7)]],
-                                Vector2(wanted_veocity.x, wanted_veocity.y),
-                            )
-                        )
                     except ValueError:
                         Tk().wm_withdraw() #to hide the main window
                         messagebox.showerror("Error", "Invalid number")
                         pass
+                    try:
+                        neededmass = simpledialog.askinteger("Input", "Enter the mass of the ball")
+                    except ValueError:
+                        Tk().wm_withdraw()
+                        messagebox.showerror("Error", "Invalid number")
+                        pass
+                    balls.append(
+                            Ball(
+                                random.randint(100, sim_with - 100),
+                                random.randint(100, SCREEN_HEIGHT - 100),
+                                neededmass,
+                                THECOLORS[colours_list[random.randint(0, 7)]],
+                                Vector2(wanted_veocity.x, wanted_veocity.y),
+                            )
+                        )
             
             # clear all balls
             if event.key == K_c:
