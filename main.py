@@ -325,15 +325,18 @@ while True:
                         Tk().wm_withdraw()
                         messagebox.showerror("Error", "Invalid number")
                         pass
-                    balls.append(
-                            Ball(
-                                random.randint(100, sim_with - 100),
-                                random.randint(100, SCREEN_HEIGHT - 100),
-                                neededmass,
-                                THECOLORS[colours_list[random.randint(0, 7)]],
-                                Vector2(wanted_veocity.x, wanted_veocity.y),
+                    try:
+                        balls.append(
+                                Ball(
+                                    random.randint(100, sim_with - 100),
+                                    random.randint(100, SCREEN_HEIGHT - 100),
+                                    neededmass,
+                                    THECOLORS[colours_list[random.randint(0, 7)]],
+                                    Vector2(wanted_veocity.x, wanted_veocity.y),
+                                )
                             )
-                        )
+                    except:
+                        pass
             
             # clear all balls
             if event.key == K_c:
