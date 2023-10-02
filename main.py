@@ -5,8 +5,9 @@ import pygame
 from pygame.locals import *
 from pygame.color import THECOLORS
 from tkinter import *
-from tkinter import messagebox , simpledialog , Tk
-Tk().wm_withdraw() #to hide the main window
+from tkinter import messagebox, simpledialog, Tk
+
+Tk().wm_withdraw()  # to hide the main window
 
 colours_list = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown"]
 
@@ -166,7 +167,7 @@ class Ball:
             # Check if the balls are moving toward each other
             if relative_speed < 0:
                 # Calculate the impulse scalar
-                impulse_scalar = -(1 + damping_factor) * relative_speed
+                impulse_scalar = -(0.5 + damping_factor) * relative_speed
                 impulse_scalar /= 1 / self.mass + 1 / other_ball.mass
 
                 # Apply impulses
@@ -228,10 +229,8 @@ font = pygame.font.SysFont("Arial", 15)
 # Function to draw a text input box
 def draw_text_input_box(x, y, width, height, text, active):
     # Draw the input box with a gray border or a green border if active
-    color = (4, 240, 20) if active else (100, 100, 100)
-    pygame.draw.rect(screen, color, (x, y, width, height))
     text_surface = font.render(text, True, (255, 255, 255))
-    screen.blit(text_surface, (x + 5, y + 5))
+    screen.blit(text_surface, (x, y))
     # text for damping factor
     text = font.render(
         "Press D to change Damping: " + str(damping_factor), True, (0, 0, 0)
@@ -288,9 +287,19 @@ while True:
             if event.key == K_SPACE:
                 is_paused = not is_paused  # Toggle pause/play
             if event.key == K_d:
-                damping_factor = simpledialog.askfloat(
-                    "Input", "Enter the damping factor"
-                )
+                dampers = simpledialog.askfloat("Input", "Enter the damping factor")
+                try:
+                    if dampers < 0 or dampers > 1:
+                        Tk().wm_withdraw()
+                        messagebox.showerror(
+                            "Error", "Invalid number number between 0 and 0.9 allowd"
+                        )
+                        pass
+                    else:
+                        set_damping(dampers)
+                except Exception as e:
+                    print(e)
+
             if event.key == K_UP:
                 # if there are more than 7 balls
                 if len(balls) >= 7:
@@ -299,32 +308,38 @@ while True:
                 else:
                     try:
                         wanted_veocity = Vector2(0, 0)
-                        #make a pop up window to ask for the velocity (number input). make the main TK windown hidden
-                        wanted_veocity.x = simpledialog.askfloat("Input", "Enter the x velocity")
-                        wanted_veocity.y = simpledialog.askfloat("Input", "Enter the y velocity")
+                        # make a pop up window to ask for the velocity (number input). make the main TK windown hidden
+                        wanted_veocity.x = simpledialog.askfloat(
+                            "Input", "Enter the x velocity"
+                        )
+                        wanted_veocity.y = simpledialog.askfloat(
+                            "Input", "Enter the y velocity"
+                        )
                     except ValueError:
-                        Tk().wm_withdraw() #to hide the main window
+                        Tk().wm_withdraw()  # to hide the main window
                         messagebox.showerror("Error", "Invalid number")
                         pass
                     try:
-                        neededmass = simpledialog.askinteger("Input", "Enter the mass of the ball")
+                        neededmass = simpledialog.askinteger(
+                            "Input", "Enter the mass of the ball"
+                        )
                     except ValueError:
                         Tk().wm_withdraw()
                         messagebox.showerror("Error", "Invalid number")
                         pass
                     try:
                         balls.append(
-                                Ball(
-                                    random.randint(100, sim_with - 100),
-                                    random.randint(100, SCREEN_HEIGHT - 100),
-                                    neededmass,
-                                    THECOLORS[colours_list[random.randint(0, 7)]],
-                                    Vector2(wanted_veocity.x, wanted_veocity.y),
-                                )
+                            Ball(
+                                random.randint(100, sim_with - 100),
+                                random.randint(100, SCREEN_HEIGHT - 100),
+                                neededmass,
+                                THECOLORS[colours_list[random.randint(0, 7)]],
+                                Vector2(wanted_veocity.x, wanted_veocity.y),
                             )
+                        )
                     except:
                         pass
-            
+
             # clear all balls
             if event.key == K_c:
                 balls = []
