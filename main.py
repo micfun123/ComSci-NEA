@@ -285,25 +285,12 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN:
-            if event.key == K_d:
-                input_active = not input_active
             if event.key == K_SPACE:
                 is_paused = not is_paused  # Toggle pause/play
-            if input_active:
-                if event.key == K_RETURN:
-                    try:
-                        damping = float(input_text)
-                        if 0.0 <= damping <= 1.0:
-                            set_damping(damping)
-                            input_text = ""
-                    except ValueError:
-                        print(
-                            "Invalid input. Please enter a number between 0.0 and 1.0."
-                        )
-                elif event.key == K_BACKSPACE:
-                    input_text = input_text[:-1]
-                else:
-                    input_text += event.unicode
+            if event.key == K_d:
+                damping_factor = simpledialog.askfloat(
+                    "Input", "Enter the damping factor"
+                )
             if event.key == K_UP:
                 # if there are more than 7 balls
                 if len(balls) >= 7:
