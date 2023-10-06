@@ -1,4 +1,3 @@
-import sys
 import math
 import random
 import pygame
@@ -6,7 +5,6 @@ from pygame.locals import *
 from pygame.color import THECOLORS
 from tkinter import *
 from tkinter import messagebox, simpledialog, Tk
-import matplotlib.pyplot as plt
 import csv
 
 Tk().wm_withdraw()  # to hide the main window
@@ -114,12 +112,12 @@ class Vector2:
     # Provide a string representation of the vector.
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
-    
+
     def tofloat(self):
-        #turn to single value
+        # turn to single value
         x = float(self.x)
         y = float(self.y)
-        return math.sqrt(x*x + y*y)
+        return math.sqrt(x * x + y * y)
 
 
 class Ball:
@@ -199,26 +197,20 @@ class Ball:
     def update_velocity_history(self, time):
         self.velocity_history[time] = self.velocity.copy()
 
-    #graph the velocity history
+    # graph the velocity history
     def con_csv(self):
-       filename = "VEL_HITST.csv"
-       with open(filename, mode='w', newline='') as file:
-           writer = csv.writer(file)
-           
-           # Write the header row with column names
-           header = ['time', 'velocity_x', 'velocity_y']
-           writer.writerow(header)
-           
-           # Write the data rows
-           for time, velocity in self.velocity_history.items():
-               row = [time, velocity.x, velocity.y]
-               writer.writerow(row)
+        filename = "VEL_HITST.csv"
+        with open(filename, mode="w", newline="") as file:
+            writer = csv.writer(file)
 
+            # Write the header row with column names
+            header = ["time", "velocity_x", "velocity_y"]
+            writer.writerow(header)
 
-
-
-
-
+            # Write the data rows
+            for time, velocity in self.velocity_history.items():
+                row = [time, velocity.x, velocity.y]
+                writer.writerow(row)
 
 
 # Create instances of Ball
@@ -315,7 +307,6 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            sys.exit()
         elif event.type == KEYDOWN:
             if event.key == K_SPACE:
                 is_paused = not is_paused  # Toggle pause/play
@@ -436,7 +427,7 @@ while True:
             input_active,
         )
 
-        #update ball velocity history
+        # update ball velocity history
         for ball in balls:
             ball.update_velocity_history(pygame.time.get_ticks())
 
@@ -455,5 +446,3 @@ while True:
         )
         pygame.display.flip()
         pygame.time.Clock().tick(60)
-
- 
