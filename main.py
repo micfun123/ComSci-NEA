@@ -6,6 +6,8 @@ from pygame.locals import *
 from pygame.color import THECOLORS
 from tkinter import *
 from tkinter import messagebox, simpledialog, Tk
+import matplotlib.pyplot as plt
+import csv
 
 Tk().wm_withdraw()  # to hide the main window
 
@@ -112,6 +114,12 @@ class Vector2:
     # Provide a string representation of the vector.
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
+    
+    def tofloat(self):
+        #turn to single value
+        x = float(self.x)
+        y = float(self.y)
+        return math.sqrt(x*x + y*y)
 
 
 class Ball:
@@ -122,6 +130,7 @@ class Ball:
         self.radius = int(math.sqrt(mass) * 20)
         self.color = color
         self.velocity = velocity
+        self.velocity_history = {}
 
     def move(self):
         self.pos.add(self.velocity)
@@ -186,6 +195,30 @@ class Ball:
                 self.pos.y -= overlap * collision_normal.y
                 other_ball.pos.x += overlap * collision_normal.x
                 other_ball.pos.y += overlap * collision_normal.y
+
+    def update_velocity_history(self, time):
+        self.velocity_history[time] = self.velocity.copy()
+
+    #graph the velocity history
+    def con_csv(self):
+       filename = "VEL_HITST.csv"
+       with open(filename, mode='w', newline='') as file:
+           writer = csv.writer(file)
+           
+           # Write the header row with column names
+           header = ['time', 'velocity_x', 'velocity_y']
+           writer.writerow(header)
+           
+           # Write the data rows
+           for time, velocity in self.velocity_history.items():
+               row = [time, velocity.x, velocity.y]
+               writer.writerow(row)
+
+
+
+
+
+
 
 
 # Create instances of Ball
@@ -344,6 +377,10 @@ while True:
             if event.key == K_c:
                 balls = []
 
+            if event.key == K_g:
+                for ball in balls:
+                    ball.con_csv()
+
     # draw a ball
     screen.fill((255, 255, 255))
     for ball in balls:
@@ -399,9 +436,12 @@ while True:
             input_active,
         )
 
+        #update ball velocity history
+        for ball in balls:
+            ball.update_velocity_history(pygame.time.get_ticks())
+
         pygame.display.flip()
         pygame.time.Clock().tick(60)
-        print(damping_factor)
     else:
         # If paused, just draw the control section background
         pygame.draw.rect(screen, control_bg_color, control_section)
@@ -415,3 +455,5 @@ while True:
         )
         pygame.display.flip()
         pygame.time.Clock().tick(60)
+
+ 
