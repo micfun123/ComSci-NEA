@@ -142,7 +142,7 @@ class Ball:
         if (
             self.pos.x - self.radius < 0 or self.pos.x + self.radius > simWidth
         ):  # left or right wall
-            self.velocity.x *= -1 * damping_factor + 0.5  # reverse x velocity
+            self.velocity.x *= -1 # reverse x velocity
         if (
             self.pos.y - self.radius < 0 or self.pos.y + self.radius > simHeight
         ):  # ceiling or floor collition
