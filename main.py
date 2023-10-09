@@ -142,11 +142,11 @@ class Ball:
         if (
             self.pos.x - self.radius < 0 or self.pos.x + self.radius > simWidth
         ):  # left or right wall
-            self.velocity.x *= -1  # reverse x velocity
+            self.velocity.x *= -1 * damping_factor + 0.5  # reverse x velocity
         if (
             self.pos.y - self.radius < 0 or self.pos.y + self.radius > simHeight
         ):  # ceiling or floor collition
-            self.velocity.y *= -1  # reverse y velocity
+            self.velocity.y *= -1 # reverse y velocity
 
     def check_ball_collision(self, other_ball):
         # Calculate the vector between the centers of the two balls
@@ -204,13 +204,12 @@ class Ball:
             writer = csv.writer(file)
 
             # Write the header row with column names
-            header = ["time", "velocity_x", "velocity_y"]
+            header = ["time","Velocity"]
             writer.writerow(header)
 
-            # Write the data rows
+            # Write the data rows with the time and velocity convert time to seconds
             for time, velocity in self.velocity_history.items():
-                row = [time, velocity.x, velocity.y]
-                writer.writerow(row)
+                writer.writerow([time / 1000, velocity.tofloat()])
 
 
 # Create instances of Ball
