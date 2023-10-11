@@ -307,6 +307,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
         elif event.type == KEYDOWN:
+            iserror = False
             if event.key == K_SPACE:
                 is_paused = not is_paused  # Toggle pause/play
             if event.key == K_d:
@@ -346,20 +347,26 @@ while True:
                         neededmass = simpledialog.askinteger(
                             "Input", "Enter the mass of the ball"
                         )
+                        if neededmass <= 0:
+                            Tk().wm_withdraw()
+                            messagebox.showerror("Error", "Invalid mass, Must be greater than 0")
+                            iserror = True
+
                     except ValueError:
                         Tk().wm_withdraw()
                         messagebox.showerror("Error", "Invalid number")
                         pass
                     try:
-                        balls.append(
-                            Ball(
-                                random.randint(100, sim_with - 100),
-                                random.randint(100, SCREEN_HEIGHT - 100),
-                                neededmass,
-                                THECOLORS[colours_list[random.randint(0, 7)]],
-                                Vector2(wanted_veocity.x, wanted_veocity.y),
+                        if iserror == False:
+                            balls.append(
+                                Ball(
+                                    random.randint(100, sim_with - 100),
+                                    random.randint(100, SCREEN_HEIGHT - 100),
+                                    neededmass,
+                                    THECOLORS[colours_list[random.randint(0, 7)]],
+                                    Vector2(wanted_veocity.x, wanted_veocity.y),
+                                )
                             )
-                        )
                     except:
                         pass
 
