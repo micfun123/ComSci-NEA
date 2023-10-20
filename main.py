@@ -142,11 +142,11 @@ class Ball:
         if (
             self.pos.x - self.radius < 0 or self.pos.x + self.radius > simWidth
         ):  # left or right wall
-            self.velocity.x *= -1 # reverse x velocity
+            self.velocity.x *= -1  # reverse x velocity
         if (
             self.pos.y - self.radius < 0 or self.pos.y + self.radius > simHeight
         ):  # ceiling or floor collition
-            self.velocity.y *= -1 # reverse y velocity
+            self.velocity.y *= -1  # reverse y velocity
 
     def check_ball_collision(self, other_ball):
         # Calculate the vector between the centers of the two balls
@@ -204,7 +204,7 @@ class Ball:
             writer = csv.writer(file)
 
             # Write the header row with column names
-            header = ["time","Velocity"]
+            header = ["time", "Velocity"]
             writer.writerow(header)
 
             # Write the data rows with the time and velocity convert time to seconds
@@ -339,6 +339,32 @@ while True:
                         wanted_veocity.y = simpledialog.askfloat(
                             "Input", "Enter the y velocity"
                         )
+                        wantedx_location = simpledialog.askfloat(
+                            "Input", "Enter the x location"
+                        )
+                        wantedy_location = simpledialog.askfloat(
+                            "Input", "Enter the y location"
+                        )
+                        if wantedx_location < 100 or wantedx_location > sim_with - 100:
+                            iserror = True
+                            Tk().wm_withdraw()
+                            messagebox.showerror(
+                                "Error",
+                                f"Invalid number x must be between 100 and {sim_with-100}",
+                            )
+                            pass
+                        if (
+                            wantedy_location < 100
+                            or wantedy_location > SCREEN_HEIGHT - 100
+                        ):
+                            iserror = True
+                            Tk().wm_withdraw()
+                            messagebox.showerror(
+                                "Error",
+                                f"Invalid number y must be between 100 and {SCREEN_HEIGHT - 100}",
+                            )
+                            pass
+
                     except ValueError:
                         Tk().wm_withdraw()  # to hide the main window
                         messagebox.showerror("Error", "Invalid number")
@@ -349,7 +375,9 @@ while True:
                         )
                         if neededmass <= 0:
                             Tk().wm_withdraw()
-                            messagebox.showerror("Error", "Invalid mass, Must be greater than 0")
+                            messagebox.showerror(
+                                "Error", "Invalid mass, Must be greater than 0"
+                            )
                             iserror = True
 
                     except ValueError:
@@ -360,8 +388,8 @@ while True:
                         if iserror == False:
                             balls.append(
                                 Ball(
-                                    random.randint(100, sim_with - 100),
-                                    random.randint(100, SCREEN_HEIGHT - 100),
+                                    wantedx_location,
+                                    wantedy_location,
                                     neededmass,
                                     THECOLORS[colours_list[random.randint(0, 7)]],
                                     Vector2(wanted_veocity.x, wanted_veocity.y),
