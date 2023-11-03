@@ -1,5 +1,6 @@
 import math
 
+
 # Define a Vector2 class for 2D vector operations.
 class Vector2:
     # Initialize a vector with x and y coordinates.

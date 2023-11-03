@@ -29,7 +29,6 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Billard Balls Collision")
 
 
-
 class Ball:
     def __init__(self, x, y, mass, color, velocity=Vector2(0, 0)):
         self.pos = Vector2(x, y)
