@@ -301,8 +301,22 @@ for ball in balls:
     )
 pygame.display.flip()
 
+def draw_grid(screen, simWidth, simHeight, cell_size):
+    # Define the color for the grid lines (you can change it to your desired color)
+    grid_color = (200, 200, 200)
+    
+    # Draw vertical lines
+    for x in range(0, simWidth, cell_size):
+        pygame.draw.line(screen, grid_color, (x, 0), (x, simHeight))
+    
+    # Draw horizontal lines
+    for y in range(0, simHeight, cell_size):
+        pygame.draw.line(screen, grid_color, (0, y), (simWidth, y))
+
+draw_grid(screen, sim_with, SCREEN_HEIGHT, 100)
 
 while True:
+    draw_grid(screen, sim_with, SCREEN_HEIGHT, 100)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -408,6 +422,7 @@ while True:
 
     # draw a ball
     screen.fill((255, 255, 255))
+    draw_grid(screen, sim_with, SCREEN_HEIGHT, 100)
     for ball in balls:
         ball.draw(screen)
         # text for velocity rounded to 2 decimal places
@@ -422,6 +437,7 @@ while True:
         # in the control section have text for amount of balls
 
     if not is_paused:
+        
         # Clear the screen
         screen.fill((255, 255, 255))
 
