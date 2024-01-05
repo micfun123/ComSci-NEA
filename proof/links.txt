@@ -1,4 +1,0 @@
-v1 = will add later
-v2 = https://youtu.be/LVYI1ahDEfw
-v3 = https://youtu.be/6MxYYcfy2wY
-v3.2 = https://youtu.be/jvATXMTyhrw
