@@ -268,11 +268,17 @@ def draw_text_input_box(x, y, width, height, text, active):
     text = font.render(f"There are {len(balls)} balls", True, (0, 0, 0))
     screen.blit(text, (SCREEN_WIDTH - 220, 140))
     text = font.render(
-        f"Each Cell on the gring repersence 100 by 100. The minimum X and Y locations are 100",
+        f"Each Cell on the grind is 100 by 100.",
         True,
         (0, 0, 0),
     )
     screen.blit(text, (SCREEN_WIDTH - 220, 160))
+    text = font.render(
+        f"The minimum X and Y locations is 100",
+        True,
+        (0, 0, 0),
+    )
+    screen.blit(text, (SCREEN_WIDTH - 220, 180))
     pygame.display.flip()
 
 
