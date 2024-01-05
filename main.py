@@ -267,6 +267,12 @@ def draw_text_input_box(x, y, width, height, text, active):
     screen.blit(text, (SCREEN_WIDTH - 220, 120))
     text = font.render(f"There are {len(balls)} balls", True, (0, 0, 0))
     screen.blit(text, (SCREEN_WIDTH - 220, 140))
+    text = font.render(
+        f"Each Cell on the gring repersence 100 by 100. The minimum X and Y locations are 100",
+        True,
+        (0, 0, 0),
+    )
+    screen.blit(text, (SCREEN_WIDTH - 220, 160))
     pygame.display.flip()
 
 
@@ -301,17 +307,19 @@ for ball in balls:
     )
 pygame.display.flip()
 
+
 def draw_grid(screen, simWidth, simHeight, cell_size):
-    # Define the color for the grid lines (you can change it to your desired color)
+    # Define the color for the grid lines (grey)
     grid_color = (200, 200, 200)
-    
+
     # Draw vertical lines
     for x in range(0, simWidth, cell_size):
         pygame.draw.line(screen, grid_color, (x, 0), (x, simHeight))
-    
+
     # Draw horizontal lines
     for y in range(0, simHeight, cell_size):
         pygame.draw.line(screen, grid_color, (0, y), (simWidth, y))
+
 
 draw_grid(screen, sim_with, SCREEN_HEIGHT, 100)
 
@@ -437,7 +445,6 @@ while True:
         # in the control section have text for amount of balls
 
     if not is_paused:
-        
         # Clear the screen
         screen.fill((255, 255, 255))
 
