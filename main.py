@@ -315,7 +315,7 @@ pygame.display.flip()
 
 
 def draw_grid(screen, simWidth, simHeight, cell_size):
-    # Define the color for the grid lines (grey)
+    # Define the colour for the grid lines (grey)
     grid_color = (200, 200, 200)
 
     # Draw vertical lines
