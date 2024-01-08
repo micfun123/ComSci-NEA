@@ -260,6 +260,10 @@ def draw_text_input_box(x, y, width, height, text, active):
         "Press D to change Damping: " + str(damping_factor), True, (0, 0, 0)
     )
     screen.blit(text, (SCREEN_WIDTH - 220, 60))
+    text = font.render(
+        "Press space to play and pause", True, (0, 0, 0)
+    )
+    screen.blit(text, (SCREEN_WIDTH - 220, 80))
     # draw in the ball numbers and how to increase and clearn them
     text = font.render("Press UP to add a ball", True, (0, 0, 0))
     screen.blit(text, (SCREEN_WIDTH - 220, 100))
@@ -362,10 +366,10 @@ while True:
                         wanted_veocity = Vector2(0, 0)
                         # make a pop up window to ask for the velocity (number input). make the main TK windown hidden
                         wanted_veocity.x = simpledialog.askfloat(
-                            "Input", "Enter the x velocity"
+                            "Input", "Enter the x velocity (m/s)"
                         )
                         wanted_veocity.y = simpledialog.askfloat(
-                            "Input", "Enter the y velocity"
+                            "Input", "Enter the y velocity (m/s)"
                         )
                         wantedx_location = simpledialog.askfloat(
                             "Input", "Enter the x location"
